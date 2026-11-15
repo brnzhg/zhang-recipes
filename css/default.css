@@ -1,0 +1,39 @@
+:root {
+  --bg: #fbfaf7;
+  --fg: #22201c;
+  --muted: #6b665c;
+  --accent: #a4462a;
+  --rule: #e4dfd4;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1b19;
+    --fg: #ebe7df;
+    --muted: #a39d91;
+    --accent: #e48a6b;
+    --rule: #3a3833;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto;
+  max-width: 42rem;
+  padding: 1.5rem 1rem 4rem;
+  background: var(--bg);
+  color: var(--fg);
+  font: 1.0625rem/1.6 Georgia, "Iowan Old Style", serif;
+}
+a { color: var(--accent); }
+header { border-bottom: 1px solid var(--rule); padding-bottom: .75rem; margin-bottom: 2rem; }
+.site-name { font-weight: bold; text-decoration: none; color: var(--fg); }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 1rem; }
+.recipe .body h1 { font-size: 1.35rem; margin-top: 2rem; border-bottom: 1px solid var(--rule); }
+.recipe .body h2 { font-size: 1.1rem; margin-top: 1.5rem; }
+.facts { display: grid; grid-template-columns: max-content 1fr; gap: .25rem 1rem; color: var(--muted); }
+.facts dt { font-weight: bold; }
+.facts dd { margin: 0; }
+.sources { margin-top: 3rem; color: var(--muted); font-size: .9rem; overflow-wrap: anywhere; }
+.browse { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0 2rem; }
+.browse ul, .recipe-list { padding-left: 1.1rem; }
+.count { color: var(--muted); font-size: .85rem; }
+.kind { color: var(--muted); font-weight: normal; }

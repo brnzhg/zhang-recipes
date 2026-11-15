@@ -1,0 +1,17 @@
+packages: .
+
+-- ghcup's "recommended" GHC; must match the CI workflow.
+with-compiler: ghc-9.10.3
+
+-- The hakyll-flint library, pinned to a commit. Bump `tag` to pick up changes.
+-- To develop the library alongside the site, create a cabal.project.local
+-- (git-ignored) containing:  packages: ../hakyll-flint
+source-repository-package
+  type: git
+  location: https://github.com/brnzhg/hakyll-flint.git
+  tag: 4e214128aaea2eea7971a869e58006c95f999f56
+
+-- Settings in a dependency's cabal.project don't carry over, so this is
+-- copied from hakyll-flint: without it, cabal build and HLS resolve
+-- different Cabal versions for setup scripts and each compiles pandoc.
+constraints: setup.Cabal ==3.16.1.0

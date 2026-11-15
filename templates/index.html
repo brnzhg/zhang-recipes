@@ -1,0 +1,16 @@
+<nav class="browse">
+  <section>
+    <h2>By protein</h2>
+    <ul>$for(proteins)$<li><a href="$url$">$value$</a> <span class="count">$count$</span></li>$endfor$</ul>
+  </section>
+  <section>
+    <h2>By category</h2>
+    <ul>$for(categories)$<li><a href="$url$">$value$</a> <span class="count">$count$</span></li>$endfor$</ul>
+  </section>
+</nav>
+<h2>All recipes</h2>
+<ul class="recipe-list">
+$for(recipes)$
+  <li><a href="$url$">$title$</a></li>
+$endfor$
+</ul>

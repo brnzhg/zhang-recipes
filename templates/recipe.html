@@ -1,0 +1,17 @@
+<article class="recipe">
+  <h1>$title$</h1>
+  <dl class="facts">
+    $if(proteinLinks)$<dt>Protein</dt><dd>$proteinLinks$</dd>$endif$
+    $if(categoryLinks)$<dt>Category</dt><dd>$categoryLinks$</dd>$endif$
+    $if(servings)$<dt>Serves</dt><dd>$servings$</dd>$endif$
+  </dl>
+  <div class="body">
+$body$
+  </div>
+  $if(sources)$
+  <footer class="sources">
+    Adapted from:
+    <ul>$for(sources)$<li><a href="$url$">$url$</a></li>$endfor$</ul>
+  </footer>
+  $endif$
+</article>

@@ -1,0 +1,19 @@
+cabal-version:      3.4
+name:               zhang-recipes
+version:            0.1.0.0
+synopsis:           A recipe site built with Hakyll and hakyll-flint
+build-type:         Simple
+
+executable site
+  main-is:            Site.hs
+  default-language:   GHC2024
+  default-extensions: OverloadedStrings
+  -- `watch` (file watcher + preview server) needs the threaded runtime.
+  ghc-options:        -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+    , base          >=4.20 && <5
+    , filepath      >=1.4  && <1.6
+    , hakyll        >=4.16 && <4.18
+    , hakyll-flint
+    , pandoc        >=3.0  && <3.14
+    , text          >=2.0  && <2.2
