@@ -1,0 +1,45 @@
+<article class="character">
+  <header class="character-head">
+    <div class="sigil" aria-hidden="true">$initial$</div>
+    <div>
+      <h1>$name$</h1>
+      $if(class)$<p class="class">$class$</p>$endif$
+    </div>
+  </header>
+  <div class="bio">
+$body$
+  </div>
+
+  <section>
+    <h2>★ Favorites</h2>
+    $if(favorites)$
+    <ul class="cards">
+    $for(favorites)$<li><a href="$url$" class="card"><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
+    </ul>
+    $else$
+    <p class="empty">No favorites yet. Add recipe titles to <code>favorites</code> in this page's file.</p>
+    $endif$
+  </section>
+
+  <section>
+    <h2>My Recipes</h2>
+    $if(myRecipes)$
+    <ul class="cards">
+    $for(myRecipes)$<li><a href="$url$" class="card"><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
+    </ul>
+    $else$
+    <p class="empty">No recipes yet. Set <code>recipe-contributor: $name$</code> on a recipe to list it here.</p>
+    $endif$
+  </section>
+
+  $if(tagSections)$
+  $for(tagSections)$
+  <section>
+    <h2 class="tag-heading"><a href="$url$">$value$</a></h2>
+    <ul class="cards">
+    $for(pages)$<li><a href="$url$" class="card"><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
+    </ul>
+  </section>
+  $endfor$
+  $endif$
+</article>

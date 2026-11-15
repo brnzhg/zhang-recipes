@@ -1,6 +1,8 @@
-<h1><span class="kind">$heading$:</span> $value$</h1>
-<ul class="recipe-list">
-$for(recipes)$
-  <li><a href="$url$">$title$</a></li>
-$endfor$
+<header class="page-head">
+  <p class="kicker">$heading$</p>
+  <h1 class="value-title">$value$</h1>
+  <p class="count">$countLabel$</p>
+</header>
+<ul class="cards">
+$for(recipes)$<li><a href="$url$" class="card"><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
 </ul>

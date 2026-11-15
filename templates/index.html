@@ -1,16 +1,36 @@
-<nav class="browse">
-  <section>
-    <h2>By protein</h2>
-    <ul>$for(proteins)$<li><a href="$url$">$value$</a> <span class="count">$count$</span></li>$endfor$</ul>
-  </section>
-  <section>
-    <h2>By category</h2>
-    <ul>$for(categories)$<li><a href="$url$">$value$</a> <span class="count">$count$</span></li>$endfor$</ul>
-  </section>
-</nav>
-<h2>All recipes</h2>
-<ul class="recipe-list">
-$for(recipes)$
-  <li><a href="$url$">$title$</a></li>
-$endfor$
-</ul>
+<header class="hero">
+  <h1>Zhang Recipes</h1>
+  <p>A family grimoire of things worth cooking.</p>
+</header>
+
+<section>
+  <h2>The Party</h2>
+  <ul class="party">
+  $for(party)$
+    <li><a href="$url$" class="member">
+      <span class="sigil" aria-hidden="true">$initial$</span>
+      <span class="member-name">$name$</span>
+      $if(class)$<span class="member-class">$class$</span>$endif$
+      <span class="member-count">$recipeCount$</span>
+    </a></li>
+  $endfor$
+  </ul>
+</section>
+
+<section class="browse">
+  <div>
+    <h2>By Protein</h2>
+    <ul class="chips">$for(proteins)$<li><a href="$url$">$value$ <span class="n">$count$</span></a></li>$endfor$</ul>
+  </div>
+  <div>
+    <h2>By Tag</h2>
+    <ul class="chips">$for(tags)$<li><a href="$url$">$value$ <span class="n">$count$</span></a></li>$endfor$</ul>
+  </div>
+</section>
+
+<section>
+  <h2>All Recipes <span class="n">$recipeCount$</span></h2>
+  <ul class="cards">
+  $for(recipes)$<li><a href="$url$" class="card"><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
+  </ul>
+</section>

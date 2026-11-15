@@ -1,17 +1,21 @@
 <article class="recipe">
-  <h1>$title$</h1>
-  <dl class="facts">
-    $if(proteinLinks)$<dt>Protein</dt><dd>$proteinLinks$</dd>$endif$
-    $if(categoryLinks)$<dt>Category</dt><dd>$categoryLinks$</dd>$endif$
-    $if(servings)$<dt>Serves</dt><dd>$servings$</dd>$endif$
-  </dl>
-  <div class="body">
+  <header class="recipe-head">
+    <h1>$title$</h1>
+    <dl class="stats">
+      $if(proteinLinks)$<div><dt>Protein</dt><dd>$proteinLinks$</dd></div>$endif$
+      $if(servings)$<div><dt>Serves</dt><dd>$servings$</dd></div>$endif$
+      $if(contributorLinks)$<div><dt>Contributed by</dt><dd>$contributorLinks$</dd></div>$endif$
+      $if(favoritedBy)$<div><dt>Favorite of</dt><dd>$for(favoritedBy)$<a href="$url$">$name$</a>$sep$, $endfor$</dd></div>$endif$
+    </dl>
+    $if(tagLinks)$<p class="tags">$tagLinks$</p>$endif$
+  </header>
+  <div class="scroll">
 $body$
   </div>
   $if(sources)$
   <footer class="sources">
-    Adapted from:
-    <ul>$for(sources)$<li><a href="$url$">$url$</a></li>$endfor$</ul>
+    <span class="label">Adapted from</span>
+    $for(sources)$$if(url)$<a href="$url$">$label$</a>$else$<span>$label$</span>$endif$$sep$ · $endfor$
   </footer>
   $endif$
 </article>

@@ -1,39 +1,270 @@
+/* Zhang Recipes: parchment & ink by day, a candlelit tavern by night. */
+
 :root {
-  --bg: #fbfaf7;
-  --fg: #22201c;
-  --muted: #6b665c;
-  --accent: #a4462a;
-  --rule: #e4dfd4;
+  --bg: #f3ead7;
+  --bg-deep: #e9dcc0;
+  --card: #fbf6ea;
+  --ink: #2a2017;
+  --muted: #6e5e4a;
+  --rule: #d4c3a0;
+  --accent: #8e2f1f;        /* sealing-wax red */
+  --gold: #a87a1f;
+  --gold-soft: #e7cf8f;
+  --fresh: #2f6b4f;         /* herb green */
+  --fresh-soft: #d6e8d4;
+  --shadow: 0 1px 0 rgba(80, 55, 20, .08), 0 6px 18px -10px rgba(80, 55, 20, .35);
+  --display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --body: "Alegreya", Georgia, "Iowan Old Style", serif;
+  color-scheme: light;
 }
+
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1c1b19;
-    --fg: #ebe7df;
-    --muted: #a39d91;
-    --accent: #e48a6b;
-    --rule: #3a3833;
+    --bg: #17130f;
+    --bg-deep: #100d0a;
+    --card: #221c16;
+    --ink: #ece2cc;
+    --muted: #b0a088;
+    --rule: #3d3226;
+    --accent: #e0805e;
+    --gold: #e0b45a;
+    --gold-soft: #4a3a1c;
+    --fresh: #8fd0a8;
+    --fresh-soft: #1f3a2c;
+    --shadow: 0 1px 0 rgba(0, 0, 0, .4), 0 8px 22px -12px rgba(0, 0, 0, .8);
+    color-scheme: dark;
   }
 }
+
 * { box-sizing: border-box; }
+
+html { background: var(--bg-deep); }
+
 body {
   margin: 0 auto;
-  max-width: 42rem;
-  padding: 1.5rem 1rem 4rem;
-  background: var(--bg);
-  color: var(--fg);
-  font: 1.0625rem/1.6 Georgia, "Iowan Old Style", serif;
+  max-width: 50rem;
+  min-height: 100vh;
+  padding: 0 1rem 3rem;
+  background:
+    radial-gradient(ellipse at top, transparent 55%, rgba(120, 85, 30, .07)),
+    var(--bg);
+  color: var(--ink);
+  font: 1.125rem/1.6 var(--body);
+  box-shadow: 0 0 60px rgba(60, 40, 10, .15);
 }
-a { color: var(--accent); }
-header { border-bottom: 1px solid var(--rule); padding-bottom: .75rem; margin-bottom: 2rem; }
-.site-name { font-weight: bold; text-decoration: none; color: var(--fg); }
-h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 1rem; }
-.recipe .body h1 { font-size: 1.35rem; margin-top: 2rem; border-bottom: 1px solid var(--rule); }
-.recipe .body h2 { font-size: 1.1rem; margin-top: 1.5rem; }
-.facts { display: grid; grid-template-columns: max-content 1fr; gap: .25rem 1rem; color: var(--muted); }
-.facts dt { font-weight: bold; }
-.facts dd { margin: 0; }
-.sources { margin-top: 3rem; color: var(--muted); font-size: .9rem; overflow-wrap: anywhere; }
-.browse { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0 2rem; }
-.browse ul, .recipe-list { padding-left: 1.1rem; }
-.count { color: var(--muted); font-size: .85rem; }
-.kind { color: var(--muted); font-weight: normal; }
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { color: var(--gold); }
+
+h1, h2, h3 {
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: .02em;
+  line-height: 1.2;
+}
+h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); margin: 0; }
+h2 { font-size: 1.25rem; margin: 2.5rem 0 1rem; }
+h2::after {
+  content: "";
+  display: block;
+  height: 1px;
+  margin-top: .4rem;
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+code {
+  font-size: .85em;
+  padding: .1em .35em;
+  border-radius: 4px;
+  background: var(--bg-deep);
+}
+
+/* --- Header & footer ---------------------------------------------------- */
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 3px double var(--rule);
+}
+.crest {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  color: var(--ink);
+  text-decoration: none;
+  font: 700 1.15rem var(--display);
+  letter-spacing: .06em;
+}
+.crest svg { width: 1.8rem; height: auto; }
+.crest svg path { fill: var(--accent); }
+.crest svg .crest-mark { fill: none; stroke: var(--gold-soft); stroke-width: 3; stroke-linejoin: round; }
+.party-nav { display: flex; gap: 1.1rem; font-family: var(--display); font-size: .9rem; }
+.party-nav a { color: var(--muted); text-decoration: none; }
+.party-nav a:hover { color: var(--accent); }
+
+.site-footer {
+  margin-top: 4rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: .85rem;
+}
+.divider { display: block; color: var(--gold); margin-bottom: .5rem; }
+
+/* --- Home --------------------------------------------------------------- */
+
+.hero { text-align: center; padding: 3rem 0 1rem; }
+.hero h1 { font-size: clamp(2.2rem, 7vw, 3.4rem); }
+.hero p { margin: .5rem 0 0; color: var(--muted); font-style: italic; font-size: 1.2rem; }
+
+.party {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1rem;
+}
+.member {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto auto;
+  column-gap: .9rem;
+  padding: 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.member:hover { transform: translateY(-2px); border-color: var(--gold); color: var(--ink); }
+.member .sigil { grid-row: 1 / span 3; align-self: center; }
+.member-name { font: 700 1.15rem var(--display); }
+.member-class { color: var(--accent); font-style: italic; font-size: .95rem; }
+.member-count { color: var(--muted); font-size: .85rem; }
+
+.sigil {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: radial-gradient(circle at 35% 30%, var(--gold-soft), transparent 70%), var(--accent);
+  color: #fdf6e3;
+  font: 700 1.35rem var(--display);
+  box-shadow: inset 0 0 0 3px rgba(0, 0, 0, .12);
+}
+
+.browse { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 0 2rem; }
+.chips { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.chips a {
+  display: inline-block;
+  padding: .2rem .7rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
+  text-transform: capitalize;
+}
+.chips a:hover { border-color: var(--gold); }
+.n { color: var(--muted); font: .85rem var(--body); }
+
+/* --- Recipe cards ------------------------------------------------------- */
+
+.cards {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: .75rem;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: .3rem;
+  height: 100%;
+  padding: .8rem 1rem;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--gold);
+  border-radius: 6px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.card:hover { transform: translateY(-2px); border-left-color: var(--accent); color: var(--ink); }
+.card-title { font-weight: 700; line-height: 1.3; }
+.card-meta { color: var(--muted); font-size: .85rem; text-transform: capitalize; }
+
+.empty { color: var(--muted); font-style: italic; }
+
+/* --- Value pages (protein/tag) ------------------------------------------ */
+
+.page-head { padding: 2.5rem 0 .5rem; }
+.kicker { margin: 0; color: var(--gold); font: 700 .85rem var(--display); letter-spacing: .15em; text-transform: uppercase; }
+.value-title { text-transform: capitalize; }
+.page-head .count { margin: .25rem 0 0; color: var(--muted); }
+
+/* --- Character (user) pages --------------------------------------------- */
+
+.character-head { display: flex; align-items: center; gap: 1.2rem; padding: 2.5rem 0 .5rem; }
+.character-head .sigil { width: 4.5rem; height: 4.5rem; font-size: 2rem; }
+.class { margin: .2rem 0 0; color: var(--accent); font-style: italic; font-size: 1.2rem; }
+.tag-heading a { color: inherit; text-decoration: none; text-transform: capitalize; }
+
+/* --- Recipe pages ------------------------------------------------------- */
+
+.recipe-head { padding: 2.5rem 0 1rem; }
+.stats { display: flex; flex-wrap: wrap; gap: .75rem 2rem; margin: 1rem 0 0; }
+.stats div { display: flex; flex-direction: column; }
+.stats dt { color: var(--gold); font: 700 .75rem var(--display); letter-spacing: .12em; text-transform: uppercase; }
+.stats dd { margin: 0; text-transform: capitalize; }
+.tags { display: flex; flex-wrap: wrap; gap: .4rem; margin: 1rem 0 0; font-size: 0; }
+.tags a {
+  font-size: .9rem;
+  padding: .1rem .65rem;
+  border-radius: 999px;
+  background: var(--gold-soft);
+  color: var(--ink);
+  text-decoration: none;
+  text-transform: capitalize;
+}
+.tags a:hover { background: var(--gold); color: var(--bg); }
+
+.scroll {
+  margin-top: 1rem;
+  padding: .5rem 1.5rem 1.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+.scroll h1 { font-size: 1.35rem; margin: 1.6rem 0 .6rem; color: var(--accent); }
+.scroll h2 { font-size: 1.05rem; margin: 1.2rem 0 .4rem; }
+.scroll h2::after { display: none; }
+.scroll ul { padding-left: 1.2rem; }
+.scroll li { margin: .2rem 0; }
+.scroll li::marker { color: var(--gold); }
+
+.fresh {
+  font-weight: 700;
+  padding: 0 .3em;
+  border-radius: 4px;
+  background: var(--fresh-soft);
+  color: var(--fresh);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.legend { margin: -.2rem 0 .6rem; color: var(--muted); font-size: .9rem; font-style: italic; }
+.legend .fresh { font-style: normal; }
+
+.sources { margin-top: 1.5rem; color: var(--muted); font-size: .95rem; }
+.sources .label { color: var(--gold); font: 700 .75rem var(--display); letter-spacing: .12em; text-transform: uppercase; margin-right: .5rem; }

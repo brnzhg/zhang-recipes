@@ -9,7 +9,7 @@ with-compiler: ghc-9.10.3
 source-repository-package
   type: git
   location: https://github.com/brnzhg/hakyll-flint.git
-  tag: 4e214128aaea2eea7971a869e58006c95f999f56
+  tag: c8186d8cd33a4dbdae4b4fb2f03cccfb83b55da3
 
 -- Settings in a dependency's cabal.project don't carry over, so this is
 -- copied from hakyll-flint: without it, cabal build and HLS resolve
