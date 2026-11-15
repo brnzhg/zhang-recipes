@@ -51,17 +51,8 @@ users = "users/*.md"
 
 --------------------------------------------------------------------------------
 
--- | The site's sources live at the repo root, next to cabal's build
--- directory. Hakyll would scan dist-newstyle too, and with it there,
--- incremental builds stopped noticing edits to recipes.
-config :: Configuration
-config =
-    defaultConfiguration
-        { ignoreFile = \name -> name `elem` ["dist-newstyle", "Site.hs"] || ignoreFile defaultConfiguration name
-        }
-
 main :: IO ()
-main = hakyllWith config $ do
+main = hakyll $ do
     recipeIds <- getMatches recipes
     let recipeBySlug = Map.fromList [(titleSlug ident, ident) | ident <- recipeIds]
 
