@@ -2,6 +2,7 @@
 protein: chicken
 recipe-tag: []
 recipe-contributor: Brian
+added: 2026-11-15
 servings:
 source:
 - https://savaskitchen.com/how-to-boil-whole-chicken-with-sipping-broth/

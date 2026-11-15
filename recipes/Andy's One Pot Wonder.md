@@ -4,6 +4,7 @@ recipe-tag:
 - entree
 - meal prep
 recipe-contributor: Brian
+added: 2026-11-15
 servings:
 source:
 - https://www.youtube.com/watch?v=P0BKlrc1e8s

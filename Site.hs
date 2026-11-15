@@ -2,20 +2,24 @@
 --
 -- * @recipes/*.md@: one recipe per file; the file name is the title. Front
 --   matter: @protein@ (one value), @recipe-tag@ (a list),
---   @recipe-contributor@ (whose recipe page it is), @servings@, and @source@
---   (where it came from: links or plain text).
+--   @recipe-contributor@ (whose recipe page it is), @added@ (YYYY-MM-DD),
+--   @servings@, and @source@ (where it came from: links or plain text).
 -- * @users/*.md@: one homepage per person. Front matter: @name@, @class@,
---   @favorites@ (recipe titles) and @tag-sections@ (tags shown as sections).
+--   @gem@ (their colour), @favorites@ (recipe titles) and @tag-sections@
+--   (tags shown as sections).
 module Main (main) where
 
 import Control.Applicative ((<|>))
-import Control.Monad (forM_, unless, (>=>))
+import Control.Monad (forM, forM_, unless, (>=>))
+import Data.Char (ord)
 import Data.Functor ((<&>))
-import Data.List (groupBy, isPrefixOf, stripPrefix)
+import Data.List (groupBy, isPrefixOf, sortOn, stripPrefix)
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
-import Data.Maybe (fromMaybe, mapMaybe)
+import Data.Maybe (fromMaybe, isJust, isNothing, mapMaybe)
+import Data.Ord (Down (..))
 import Data.Text qualified as T
+import Data.Time (Day, defaultTimeLocale, parseTimeM)
 import Hakyll
 import Hakyll.Flint
 import System.FilePath (takeBaseName)
@@ -47,8 +51,17 @@ users = "users/*.md"
 
 --------------------------------------------------------------------------------
 
+-- | The site's sources live at the repo root, next to cabal's build
+-- directory. Hakyll would scan dist-newstyle too, and with it there,
+-- incremental builds stopped noticing edits to recipes.
+config :: Configuration
+config =
+    defaultConfiguration
+        { ignoreFile = \name -> name `elem` ["dist-newstyle", "Site.hs"] || ignoreFile defaultConfiguration name
+        }
+
 main :: IO ()
-main = hakyll $ do
+main = hakyllWith config $ do
     recipeIds <- getMatches recipes
     let recipeBySlug = Map.fromList [(titleSlug ident, ident) | ident <- recipeIds]
 
@@ -61,6 +74,8 @@ main = hakyll $ do
         Map.findWithDefault (fromFilePath "missing") slug recipeBySlug
     checkFavorites recipeBySlug favorites
     checkTagSections tags
+    checkGems
+    checkAddedDates recipeIds
 
     let party = listField "party" (userRefContext contributors) (pageRefs <$> getMatches users)
         baseCtx = party <> defaultContext
@@ -76,6 +91,19 @@ main = hakyll $ do
         route idRoute
         compile compressCssCompiler
 
+    -- A colour per protein and per person, generated from the data.
+    rulesExtraDependencies [indexDependency proteins] . create ["css/palette.css"] $ do
+        route idRoute
+        compile $ do
+            userIds <- getMatches users
+            userRules <- forM userIds $ \ident ->
+                hueRule "user" (userSlug ident) . userHue ident <$> getMetadataField ident "gem"
+            let proteinRules =
+                    [ hueRule "protein" slug (proteinHue slug)
+                    | slug <- map (slugString . entrySlug) $ indexEntries proteins
+                    ]
+            makeItem . unlines $ proteinRules <> userRules
+
     rulesExtraDependencies [indexDependency favorites] . match recipes $ do
         route slugRoute
         compile $ do
@@ -85,6 +113,8 @@ main = hakyll $ do
                         <> propertyLinksField "contributorLinks" contributors
                         <> favoritedByField favorites
                         <> sourcesField
+                        <> proteinSlugField
+                        <> slugField "contributorSlug" "recipe-contributor"
                         <> baseCtx
             renderMarkdown markFreshIngredients
                 >>= loadAndApplyTemplate "templates/recipe.html" ctx
@@ -95,24 +125,26 @@ main = hakyll $ do
         compile $ do
             let ctx =
                     favoritesField favorites
-                        <> myRecipesField contributors
+                        <> myRecipesFields contributors
                         <> tagSectionsField tags
                         <> field "title" userName
                         <> initialField
+                        <> userSlugField
                         <> baseCtx
             renderMarkdown id
                 >>= loadAndApplyTemplate "templates/user.html" ctx
                 >>= finish ctx
 
     -- protein/chicken.html, tag/meal-prep.html, ...
-    forM_ [("Protein", proteins), ("Tag", tags)] $ \(heading, idx) ->
+    forM_ [("Protein", "protein", proteins), ("Tag", "tag", tags)] $ \(heading, kind, idx) ->
         valuePageRules idx $ \entry -> do
             route idRoute
             compile $ do
                 let ctx =
                         constField "heading" heading
+                            <> constField "kind" kind
                             <> constField "countLabel" (recipesLabel . length $ entryMembers entry)
-                            <> valuePageContext "recipes" defaultListing entry
+                            <> valuePageContext "recipes" recipeListing entry
                             <> baseCtx
                 makeItem "" >>= loadAndApplyTemplate "templates/value.html" ctx >>= finish ctx
 
@@ -121,7 +153,7 @@ main = hakyll $ do
         compile $ do
             let ctx =
                     constField "title" "Recipes"
-                        <> listField "recipes" pageRefContext (pure $ pageRefs recipeIds)
+                        <> listField "recipes" recipeCardContext (pure $ pageRefs recipeIds)
                         <> constField "recipeCount" (show $ length recipeIds)
                         <> allValuesField "proteins" proteins
                         <> allValuesField "tags" tags
@@ -149,17 +181,34 @@ userRefContext :: PropertyIndex -> Context ()
 userRefContext contributors =
     field "recipeCount" (pure . recipesLabel . length . contributedBy contributors . itemIdentifier)
         <> initialField
+        <> userSlugField
         <> pageRefContext
 
-myRecipesField :: PropertyIndex -> Context String
-myRecipesField contributors =
-    nonEmptyListField "myRecipes" pageRefContext $
-        pure . pageRefs . contributedBy contributors . itemIdentifier
+-- | users/kevin.md is "kevin": what @data-user@ and the palette use.
+userSlug :: Identifier -> String
+userSlug = takeBaseName . toFilePath
+
+userSlugField :: Context a
+userSlugField = field "userSlug" (pure . userSlug . itemIdentifier)
+
+-- | How many recipe cards My Recipes shows before "Show all".
+recentCount :: Int
+recentCount = 6
+
+-- | The user's recipes, newest first: @$recentRecipes$@ (the first few),
+-- @$olderRecipes$@ (the rest) and @$myRecipeCount$@.
+myRecipesFields :: PropertyIndex -> Context String
+myRecipesFields contributors =
+    nonEmptyListField "recentRecipes" recipeCardContext (fmap (take recentCount) . mine)
+        <> nonEmptyListField "olderRecipes" recipeCardContext (fmap (drop recentCount) . mine)
+        <> field "myRecipeCount" (pure . recipesLabel . length . contributedBy contributors . itemIdentifier)
+  where
+    mine = fmap pageRefs . newestFirst . contributedBy contributors . itemIdentifier
 
 -- | The user's @favorites@, in the order they listed them.
 favoritesField :: PropertyIndex -> Context String
 favoritesField favorites =
-    nonEmptyListField "favorites" pageRefContext $
+    nonEmptyListField "favorites" recipeCardContext $
         pure . pageRefs . map entryPage . favoriteEntries . itemIdentifier
   where
     favoriteEntries = mapMaybe (lookupValue favorites) . valuesOfPage favorites
@@ -167,7 +216,7 @@ favoritesField favorites =
 -- | One section per tag in the user's @tag-sections@ (checked by
 -- 'checkTagSections').
 tagSectionsField :: PropertyIndex -> Context String
-tagSectionsField tags = nonEmptyListField "tagSections" valueEntryContext $ \item ->
+tagSectionsField tags = nonEmptyListField "tagSections" (valueEntryContextWith recipeListing) $ \item ->
     map toItem . mapMaybe (lookupValue tags) <$> tagSections (itemIdentifier item)
   where
     toItem entry = Item (entryPage entry) entry
@@ -191,7 +240,7 @@ checkTagSections tags = do
 -- | Users who list this recipe in their @favorites@.
 favoritedByField :: PropertyIndex -> Context String
 favoritedByField favorites =
-    nonEmptyListField "favoritedBy" pageRefContext $
+    nonEmptyListField "favoritedBy" (userSlugField <> pageRefContext) $
         pure . pageRefs . pagesWithValue favorites . PropertyValue . T.pack . recipeTitle . itemIdentifier
 
 -- | Fail the build on a favorite that isn't a recipe title, naming the user.
@@ -205,6 +254,89 @@ checkFavorites recipeBySlug favorites =
                 <> unwords (map toFilePath $ entryMembers entry)
                 <> "). Use the recipe's file name without .md."
 
+-- | Each person picks a gem for their colour (@gem: emerald@). Hues for
+-- CSS @hsl()@.
+gemHues :: Map String Int
+gemHues =
+    Map.fromList
+        [ ("ruby", 350)
+        , ("garnet", 10)
+        , ("amber", 32)
+        , ("topaz", 45)
+        , ("citrine", 55)
+        , ("peridot", 85)
+        , ("emerald", 145)
+        , ("jade", 165)
+        , ("aquamarine", 185)
+        , ("sapphire", 215)
+        , ("lapis", 230)
+        , ("amethyst", 275)
+        , ("rose quartz", 330)
+        ]
+
+-- | No gem: a colour picked from the file name, so it's at least stable.
+userHue :: Identifier -> Maybe String -> Int
+userHue ident gem = fromMaybe (nameHue $ userSlug ident) $ (`Map.lookup` gemHues) =<< gem
+
+checkGems :: Rules ()
+checkGems = do
+    userIds <- getMatches users
+    forM_ userIds $ \ident -> do
+        gem <- getMetadataField ident "gem"
+        forM_ gem $ \g ->
+            unless (g `Map.member` gemHues) . fail $
+                toFilePath ident
+                    <> ": unknown gem "
+                    <> show g
+                    <> "; pick one of "
+                    <> show (Map.keys gemHues)
+
+--------------------------------------------------------------------------------
+-- Colours
+
+-- | Hand-picked protein hues; any other protein gets one from its name.
+proteinHue :: String -> Int
+proteinHue slug = Map.findWithDefault (nameHue slug) slug hues
+  where
+    hues =
+        Map.fromList
+            [ ("beef", 355)
+            , ("pork", 330)
+            , ("salmon", 15)
+            , ("chicken", 38)
+            , ("egg", 52)
+            , ("chickpea", 75)
+            , ("lentil", 125)
+            , ("tofu", 150)
+            , ("turkey", 180)
+            , ("fish", 205)
+            , ("bean", 285)
+            ]
+
+-- | A stable hue from a name.
+nameHue :: String -> Int
+nameHue = (`mod` 360) . foldl (\h c -> h * 31 + ord c) 7
+
+-- | @[data-protein="chicken"]{--hue:40}@
+hueRule :: String -> String -> Int -> String
+hueRule attr slug hue = "[data-" <> attr <> "=\"" <> slug <> "\"]{--hue:" <> show hue <> "}"
+
+-- | A metadata field, slugged (for @data-*@ attributes).
+slugField :: String -> String -> Context a
+slugField key metaKey = field key $ \item ->
+    getMetadataField (itemIdentifier item) metaKey
+        >>= maybe (noResult $ "no " <> metaKey) (pure . slugString . valueSlug . PropertyValue . T.pack)
+
+proteinSlugField :: Context a
+proteinSlugField = slugField "proteinSlug" "protein"
+
+-- | A recipe in a list of cards: its protein (for colour) and front matter.
+recipeCardContext :: Context ()
+recipeCardContext = proteinSlugField <> pageRefContext
+
+recipeListing :: PageListing
+recipeListing = PageListing recipeCardContext pure
+
 --------------------------------------------------------------------------------
 -- Recipes
 
@@ -212,6 +344,29 @@ recipesLabel :: Int -> String
 recipesLabel = \case
     1 -> "1 recipe"
     n -> show n <> " recipes"
+
+-- | The @added@ date, if any.
+addedDate :: (MonadMetadata m) => Identifier -> m (Maybe Day)
+addedDate ident = (parseDay =<<) <$> getMetadataField ident "added"
+  where
+    parseDay = parseTimeM True defaultTimeLocale "%Y-%m-%d"
+
+-- | Newest first; recipes without a date count as newest. Ties by title.
+newestFirst :: [Identifier] -> Compiler [Identifier]
+newestFirst idents = do
+    dated <- forM idents $ \ident -> (,ident) <$> addedDate ident
+    pure . map snd $ sortOn key dated
+  where
+    key (day, ident) = (isJust day, Down day, recipeTitle ident)
+
+-- | Fail the build on an @added@ date that isn't YYYY-MM-DD.
+checkAddedDates :: [Identifier] -> Rules ()
+checkAddedDates recipeIds =
+    forM_ recipeIds $ \ident -> do
+        raw <- getMetadataField ident "added"
+        parsed <- addedDate ident
+        unless (isNothing raw || isJust parsed) . fail $
+            toFilePath ident <> ": added should be a date like 2026-11-15, not " <> show (fromMaybe "" raw)
 
 recipeTitle :: Identifier -> String
 recipeTitle = takeBaseName . toFilePath

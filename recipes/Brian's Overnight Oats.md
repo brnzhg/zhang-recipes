@@ -6,6 +6,7 @@ recipe-tag:
 - meal prep
 - vegetarian
 recipe-contributor: Brian
+added: 2026-11-15
 servings:
 source: []
 ---

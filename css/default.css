@@ -79,6 +79,22 @@ code {
   background: var(--bg-deep);
 }
 
+/* --- Colour tones ------------------------------------------------------ */
+/* css/palette.css (generated) sets --hue per protein and per person. */
+
+[data-protein], [data-user] {
+  --tone: hsl(var(--hue) 50% 40%);
+  --tone-strong: hsl(var(--hue) 55% 30%);
+  --tone-soft: hsl(var(--hue) 60% 89%);
+}
+@media (prefers-color-scheme: dark) {
+  [data-protein], [data-user] {
+    --tone: hsl(var(--hue) 60% 66%);
+    --tone-strong: hsl(var(--hue) 65% 78%);
+    --tone-soft: hsl(var(--hue) 30% 22%);
+  }
+}
+
 /* --- Header & footer ---------------------------------------------------- */
 
 .site-header {
@@ -268,3 +284,65 @@ code {
 
 .sources { margin-top: 1.5rem; color: var(--muted); font-size: .95rem; }
 .sources .label { color: var(--gold); font: 700 .75rem var(--display); letter-spacing: .12em; text-transform: uppercase; margin-right: .5rem; }
+
+/* --- Colour ------------------------------------------------------------ */
+
+.card[data-protein] { border-left-color: var(--tone); }
+.card[data-protein]:hover { border-left-color: var(--tone-strong); }
+.card[data-protein] .card-meta {
+  align-self: flex-start;
+  padding: 0 .55rem;
+  border-radius: 999px;
+  background: var(--tone-soft);
+  color: var(--tone-strong);
+  font-weight: 600;
+}
+
+.chips a[data-protein] { background: var(--tone-soft); border-color: var(--tone); color: var(--tone-strong); }
+.chips a[data-protein] .n { color: var(--tone); }
+
+.chip-link[data-protein] a {
+  display: inline-block;
+  padding: 0 .6rem;
+  border-radius: 999px;
+  background: var(--tone-soft);
+  color: var(--tone-strong);
+  font-weight: 600;
+  text-decoration: none;
+}
+.person[data-user], .person[data-user] a { color: var(--tone); font-weight: 600; }
+
+.page-head[data-protein] .kicker { color: var(--tone); }
+.page-head[data-protein] .value-title { color: var(--tone-strong); }
+
+/* People: badge, party card, nav and page all take their gem colour. */
+[data-user] .sigil, .sigil[data-user] {
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, .45), transparent 65%), var(--tone);
+  border-color: var(--gold);
+}
+.member[data-user] { border-top: 4px solid var(--tone); }
+.member[data-user] .member-class { color: var(--tone); }
+.party-nav a[data-user] { color: var(--tone); }
+.party-nav a[data-user]:hover { color: var(--tone-strong); }
+.character[data-user] .class { color: var(--tone); }
+.character[data-user] h2::after { background: linear-gradient(90deg, var(--tone), transparent); }
+
+/* "Show all" for long recipe lists. */
+.more { margin-top: .75rem; }
+.more summary {
+  display: inline-block;
+  cursor: pointer;
+  padding: .3rem .9rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--muted);
+  font: 700 .85rem var(--display);
+  letter-spacing: .05em;
+  list-style: none;
+}
+.more summary::-webkit-details-marker { display: none; }
+.more summary::before { content: "▸ "; color: var(--gold); }
+.more[open] summary::before { content: "▾ "; }
+.more summary:hover { border-color: var(--gold); color: var(--ink); }
+.more[open] .cards { margin-top: .75rem; }

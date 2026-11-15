@@ -4,6 +4,7 @@ recipe-tag:
 - snack
 - vegetarian
 recipe-contributor: Brian
+added: 2026-11-15
 servings:
 source:
 - https://www.eatingbirdfood.com/easy-no-bake-protein-balls-4-ways/

@@ -5,6 +5,7 @@ recipe-tag:
 - breakfast
 - meal prep
 recipe-contributor: Brian
+added: 2026-11-15
 servings:
 source:
 - https://reciperunner.com/southwest-ground-beef-and-sweet-potato-skillet/

@@ -5,6 +5,7 @@ recipe-tag:
 - meal prep
 - vegetarian
 recipe-contributor: Brian
+added: 2026-11-15
 servings:
 source:
 - https://spicecravings.com/dal-tadka-dal-fry-instant-pot

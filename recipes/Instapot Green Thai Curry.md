@@ -3,6 +3,7 @@ protein: chicken
 recipe-tag:
 - entree
 recipe-contributor: Brian
+added: 2026-11-15
 servings:
 source:
 - https://www.seriouseats.com/pressure-cooker-thai-green-chicken-curry

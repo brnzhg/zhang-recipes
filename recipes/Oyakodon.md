@@ -3,6 +3,7 @@ protein: chicken
 recipe-tag:
 - entree
 recipe-contributor: Brian
+added: 2026-11-15
 servings: 2
 source:
 - https://www.seriouseats.com/oyakodon-japanese-chicken-and-egg-rice-bowl-recipe

@@ -2,10 +2,10 @@
   <header class="recipe-head">
     <h1>$title$</h1>
     <dl class="stats">
-      $if(proteinLinks)$<div><dt>Protein</dt><dd>$proteinLinks$</dd></div>$endif$
+      $if(proteinLinks)$<div><dt>Protein</dt><dd class="chip-link"$if(proteinSlug)$ data-protein="$proteinSlug$"$endif$>$proteinLinks$</dd></div>$endif$
       $if(servings)$<div><dt>Serves</dt><dd>$servings$</dd></div>$endif$
-      $if(contributorLinks)$<div><dt>Contributed by</dt><dd>$contributorLinks$</dd></div>$endif$
-      $if(favoritedBy)$<div><dt>Favorite of</dt><dd>$for(favoritedBy)$<a href="$url$">$name$</a>$sep$, $endfor$</dd></div>$endif$
+      $if(contributorLinks)$<div><dt>Contributed by</dt><dd class="person"$if(contributorSlug)$ data-user="$contributorSlug$"$endif$>$contributorLinks$</dd></div>$endif$
+      $if(favoritedBy)$<div><dt>Favorite of</dt><dd>$for(favoritedBy)$<a href="$url$" class="person" data-user="$userSlug$">$name$</a>$sep$, $endfor$</dd></div>$endif$
     </dl>
     $if(tagLinks)$<p class="tags">$tagLinks$</p>$endif$
   </header>

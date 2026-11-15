@@ -3,6 +3,7 @@ protein:
 recipe-tag:
 - sauce
 recipe-contributor: Kevin
+added: 2026-11-15
 servings:
 source: []
 ---

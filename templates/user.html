@@ -1,4 +1,4 @@
-<article class="character">
+<article class="character" data-user="$userSlug$">
   <header class="character-head">
     <div class="sigil" aria-hidden="true">$initial$</div>
     <div>
@@ -14,7 +14,7 @@ $body$
     <h2>★ Favorites</h2>
     $if(favorites)$
     <ul class="cards">
-    $for(favorites)$<li><a href="$url$" class="card"><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
+    $for(favorites)$<li><a href="$url$" class="card"$if(proteinSlug)$ data-protein="$proteinSlug$"$endif$><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
     </ul>
     $else$
     <p class="empty">No favorites yet. Add recipe titles to <code>favorites</code> in this page's file.</p>
@@ -22,11 +22,19 @@ $body$
   </section>
 
   <section>
-    <h2>My Recipes</h2>
-    $if(myRecipes)$
+    <h2>My Recipes <span class="n">$myRecipeCount$</span></h2>
+    $if(recentRecipes)$
     <ul class="cards">
-    $for(myRecipes)$<li><a href="$url$" class="card"><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
+    $for(recentRecipes)$<li><a href="$url$" class="card"$if(proteinSlug)$ data-protein="$proteinSlug$"$endif$><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
     </ul>
+    $if(olderRecipes)$
+    <details class="more">
+      <summary>Show all $myRecipeCount$</summary>
+      <ul class="cards">
+      $for(olderRecipes)$<li><a href="$url$" class="card"$if(proteinSlug)$ data-protein="$proteinSlug$"$endif$><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
+      </ul>
+    </details>
+    $endif$
     $else$
     <p class="empty">No recipes yet. Set <code>recipe-contributor: $name$</code> on a recipe to list it here.</p>
     $endif$
@@ -37,7 +45,7 @@ $body$
   <section>
     <h2 class="tag-heading"><a href="$url$">$value$</a></h2>
     <ul class="cards">
-    $for(pages)$<li><a href="$url$" class="card"><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
+    $for(pages)$<li><a href="$url$" class="card"$if(proteinSlug)$ data-protein="$proteinSlug$"$endif$><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
     </ul>
   </section>
   $endfor$

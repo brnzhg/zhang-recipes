@@ -3,6 +3,7 @@ protein: bean
 recipe-tag:
 - side
 recipe-contributor: Brian
+added: 2026-11-15
 servings: 12
 source:
 - Well Plated

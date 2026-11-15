@@ -5,6 +5,7 @@ recipe-tag:
 - breakfast
 - vegetarian
 recipe-contributor: Brian
+added: 2026-11-15
 servings:
 source: []
 ---

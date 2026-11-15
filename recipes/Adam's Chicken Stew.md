@@ -5,6 +5,7 @@ recipe-tag:
 - meal prep
 - whole chicken
 recipe-contributor: Brian
+added: 2026-11-15
 servings:
 source:
 - https://www.youtube.com/watch?v=xudhMRXvJI0

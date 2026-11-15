@@ -7,7 +7,7 @@
   <h2>The Party</h2>
   <ul class="party">
   $for(party)$
-    <li><a href="$url$" class="member">
+    <li><a href="$url$" class="member" data-user="$userSlug$">
       <span class="sigil" aria-hidden="true">$initial$</span>
       <span class="member-name">$name$</span>
       $if(class)$<span class="member-class">$class$</span>$endif$
@@ -20,7 +20,7 @@
 <section class="browse">
   <div>
     <h2>By Protein</h2>
-    <ul class="chips">$for(proteins)$<li><a href="$url$">$value$ <span class="n">$count$</span></a></li>$endfor$</ul>
+    <ul class="chips">$for(proteins)$<li><a href="$url$" data-protein="$slug$">$value$ <span class="n">$count$</span></a></li>$endfor$</ul>
   </div>
   <div>
     <h2>By Tag</h2>
@@ -31,6 +31,6 @@
 <section>
   <h2>All Recipes <span class="n">$recipeCount$</span></h2>
   <ul class="cards">
-  $for(recipes)$<li><a href="$url$" class="card"><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
+  $for(recipes)$<li><a href="$url$" class="card"$if(proteinSlug)$ data-protein="$proteinSlug$"$endif$><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
   </ul>
 </section>

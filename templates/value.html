@@ -1,8 +1,8 @@
-<header class="page-head">
+<header class="page-head" data-$kind$="$slug$">
   <p class="kicker">$heading$</p>
   <h1 class="value-title">$value$</h1>
   <p class="count">$countLabel$</p>
 </header>
 <ul class="cards">
-$for(recipes)$<li><a href="$url$" class="card"><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
+$for(recipes)$<li><a href="$url$" class="card"$if(proteinSlug)$ data-protein="$proteinSlug$"$endif$><span class="card-title">$title$</span>$if(protein)$<span class="card-meta">$protein$</span>$endif$</a></li>$endfor$
 </ul>

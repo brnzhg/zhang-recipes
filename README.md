@@ -13,6 +13,7 @@ Add a Markdown file to `recipes/`. The file name is the title:
 protein: chicken              # one value; gets a page at protein/chicken.html
 recipe-tag: [entree, meal prep]   # any number; each gets a page under tag/
 recipe-contributor: Kevin     # whose recipe this is; links to their page
+added: 2026-11-20             # newest recipes come first on your page
 servings: 4
 source:                       # links, or plain text like a book or a person
 - https://www.seriouseats.com/...
@@ -36,15 +37,22 @@ Each person has a page in `users/` (`users/kevin.md` is at
 ```yaml
 name: Kevin
 class: Sauce Alchemist           # the title under your name
+gem: emerald                     # your colour: ruby, garnet, amber, topaz, citrine,
+                                 # peridot, emerald, jade, aquamarine, sapphire,
+                                 # lapis, amethyst or rose quartz
 favorites: [Oyakodon, Wei's Beef Stew]   # recipe file names, without .md
 tag-sections: [vegetarian]       # extra sections, one per tag
 ```
 
 Anything written below the front matter appears at the top of the page.
 "My Recipes" lists every recipe whose `recipe-contributor` matches the
-file name (`kevin.md` matches `Kevin`). Each recipe page also shows who
-has it as a favorite. If a favorite or tag section doesn't exist, the
-build fails and names the file and the problem.
+file name (`kevin.md` matches `Kevin`). It shows the newest six by `added`
+date, and the rest open under "Show all". Each recipe page also shows who
+has it as a favorite. If a favorite, tag section, gem or date is wrong,
+the build fails and names the file and the problem.
+
+Each protein gets a colour automatically (`css/palette.css` is generated).
+To pick one for a new protein, add it to `proteinHue` in `Site.hs`.
 
 ## Building
 

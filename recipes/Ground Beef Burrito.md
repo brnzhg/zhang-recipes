@@ -4,6 +4,7 @@ recipe-tag:
 - entree
 - meal prep
 recipe-contributor: Brian
+added: 2026-11-15
 servings:
 source:
 - https://www.seriouseats.com/puffy-tacos-ground-beef-san-antonio-recipe
