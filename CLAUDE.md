@@ -19,7 +19,8 @@ cabal run site -- watch     # preview at http://localhost:8000
 - `recipes/*.md`: one recipe per file. The file name is the title.
 - `users/*.md`: one homepage per person. A user's file name must match the
   slug of their `recipe-contributor` value (`kevin.md` ↔ `Kevin`).
-- `templates/`, `css/default.css`: the fantasy-RPG theme.
+- `templates/`, `css/default.css`: the fantasy-RPG theme. `images/` and
+  `favicon.ico` hold the crest site icon, copied as is.
 - `css/palette.css` is generated and not in the repo. It sets the
   protein and person colours.
 

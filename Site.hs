@@ -82,6 +82,10 @@ main = hakyll $ do
         route idRoute
         compile compressCssCompiler
 
+    match ("images/*" .||. "favicon.ico") $ do
+        route idRoute
+        compile copyFileCompiler
+
     -- A colour per protein and per person, generated from the data.
     rulesExtraDependencies [indexDependency proteins] . create ["css/palette.css"] $ do
         route idRoute
